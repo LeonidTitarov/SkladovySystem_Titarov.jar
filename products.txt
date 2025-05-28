@@ -1,0 +1,10 @@
+P001;Monitor Dell 24";15;ELECTRONICS;Skladem
+P002;Klávesnice Logitech;30;ELECTRONICS;Skladem
+P003;Kancelářský stůl;5;FURNITURE;Skladem
+P004;Židle ergonomická;8;FURNITURE;Objednáno
+P005;Tiskový papír A4;50;OFFICE_SUPPLIES;Skladem
+P006;Tonery HP;12;OFFICE_SUPPLIES;Málo zásob
+P007;USB flash disk 64GB;25;ELECTRONICS;Skladem
+P008;Šanony A4;40;OFFICE_SUPPLIES;Skladem
+P009;Router WiFi;7;ELECTRONICS;Objednáno
+P010;Konferenční stolek;3;FURNITURE;Skladem
