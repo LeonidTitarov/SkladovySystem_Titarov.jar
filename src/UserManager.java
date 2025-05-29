@@ -48,12 +48,4 @@ class UserManager {
         return new java.util.ArrayList<>(users);
     }}
 
-//    public User findUserByFullName(String fullName) {
-//        for (User user : users) {
-//            if (user.getFullName().equals(fullName)) {
-//                return user;
-//            }
-//        }
-//        return null;
-//    }
-//}
+

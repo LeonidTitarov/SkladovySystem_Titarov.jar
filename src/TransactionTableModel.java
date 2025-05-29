@@ -51,6 +51,8 @@ class TransactionTableModel extends AbstractTableModel {
      * vrací hodnotu pro konkretní bunku v tabulce podle
      * řádku a sloupce
      * */
+
+   /// Tuhle celou metodu mi udelal ChatGTP
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         InventoryTransaction transaction = transactions.get(rowIndex);

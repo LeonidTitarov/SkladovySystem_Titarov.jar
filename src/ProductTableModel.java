@@ -57,6 +57,7 @@ class ProductTableModel extends AbstractTableModel {
      * řádku a sloupce
      * */
 
+  ///  Tuhle celou metodu mi udelal ChatGTP
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         Product product = products.get(rowIndex);

@@ -55,12 +55,12 @@ public class InventorySystem {
      */
     private static void loadProductsFromFile() {
         try {
-            // Pokud soubor neexistuje, vytvoříme ho s defaultními daty
+
             if (!Files.exists(Paths.get(PRODUCTS_FILE))) {
                 createDefaultProductsFile();
             }
 
-            // Načtení produktů ze souboru
+
             try (BufferedReader reader = new BufferedReader(new FileReader(PRODUCTS_FILE))) {
                 String line;
                 while ((line = reader.readLine()) != null) {
@@ -69,7 +69,7 @@ public class InventorySystem {
                         continue;
                     }
 
-                    // Rozdělení řádku na jednotlivé části (oddělené středníkem)
+
                     String[] parts = line.split(";");
                     if (parts.length >= 5) {
                         String id = parts[0].trim();
@@ -78,7 +78,7 @@ public class InventorySystem {
                         ProductCategory category = ProductCategory.valueOf(parts[3].trim());
                         String status = parts[4].trim();
 
-                        // Přidání produktu do inventáře
+
                         inventoryManager.addProduct(new Product(id, name, quantity, category, status));
                     }
                 }

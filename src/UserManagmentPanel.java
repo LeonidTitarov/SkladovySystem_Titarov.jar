@@ -57,6 +57,8 @@ class UserManagementPanel extends JPanel {
      * všechna povinná pole vyplněna před uložením.
      */
     private void addUser() {
+
+        /// Tenhle UI mi dopomohl Takez ChatGPT
         JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Přidat nového uživatele", true);
         dialog.setLayout(new BorderLayout());
 
@@ -132,6 +134,8 @@ class UserManagementPanel extends JPanel {
                     JOptionPane.WARNING_MESSAGE);
             return;
         }
+
+        /// Tenhle UI mi dopomohl Takez ChatGPT
 
         User selectedUser = tableModel.getUserAt(selectedRow);
 

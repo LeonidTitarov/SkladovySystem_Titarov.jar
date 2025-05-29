@@ -19,6 +19,8 @@ class ProductsPanel extends JPanel {
      * ovládacích tlačítek a tabulky produktů.
      * @param inventoryManager správce inventáře pro práci s produkty
      * @param currentUser aktuálně přihlášený uživatel
+     *
+     *                    Tuhle celou metodu mi udelal ChatGTP
      */
     public ProductsPanel(InventoryManager inventoryManager, User currentUser) {
         this.inventoryManager = inventoryManager;
@@ -140,6 +142,11 @@ class ProductsPanel extends JPanel {
             return;
         }
 
+
+
+        ///    Tuhle celou UI krom logiky mi udelal ChatGTP
+
+
         JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Přidat nový produkt", true);
         dialog.setLayout(new BorderLayout());
 
@@ -239,6 +246,8 @@ class ProductsPanel extends JPanel {
                     JOptionPane.WARNING_MESSAGE);
             return;
         }
+                       ///   Tuhle celou UI mi udelal ChatGTP
+
 
         int modelRow = productsTable.convertRowIndexToModel(selectedRow);
         Product selectedProduct = tableModel.getProductAt(modelRow);
