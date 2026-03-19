@@ -81,7 +81,6 @@ class LoginScreen extends JFrame {
         mainPanel.add(bottomPanel, BorderLayout.SOUTH);
 
         getContentPane().add(mainPanel);
-
         getRootPane().setDefaultButton(loginButton);
     }
 

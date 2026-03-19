@@ -1,10 +1,4 @@
 import javax.swing.*;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 
 public class InventorySystem {
@@ -12,25 +6,34 @@ public class InventorySystem {
     private static MainApplication mainApplication;
     private static UserManager userManager;
     private static InventoryManager inventoryManager;
+    private static DatabaseManager databaseManager;
     private static User currentUser;
-    private static final String PRODUCTS_FILE = "products.txt";
-
-/**
- * Hlavní metoda aplikace pro správu inventáře.
- * Nastavuje vzhled systému a inicializuje komponenty.
- * @param args argumenty příkazové řádky
- */
 
     public static void main(String[] args) {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception e) {
-            System.err.println("Nepodařilo se nastavit vzhled systému: " + e.getMessage());
+            System.err.println("Nepodařilo se nastavit vzhled: " + e.getMessage());
         }
 
         SwingUtilities.invokeLater(() -> {
-            userManager = new UserManager();
-            inventoryManager = new InventoryManager();
+
+            databaseManager = new DatabaseManager();
+
+            try {
+                databaseManager.getConnection().close();
+                System.out.println("Připojení k databázi úspěšné.");
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null,
+                        "Nepodařilo se připojit k databázi!\n" + e.getMessage(),
+                        "Chyba DB",
+                        JOptionPane.ERROR_MESSAGE);
+                System.exit(1);
+            }
+
+            userManager      = new UserManager(databaseManager);
+            inventoryManager = new InventoryManager(databaseManager);
+
             setupDemoData();
 
             loginScreen = new LoginScreen();
@@ -38,90 +41,29 @@ public class InventorySystem {
         });
     }
 
-    /**
-     * Nastavuje demo data - vytváří testovací uživatele a načítá produkty.
-     */
     private static void setupDemoData() {
-        userManager.addUser(new User("Leonid", "Titarov", "tvojeMama", "6969", UserRole.ADMIN));
-        userManager.addUser(new User("Pavel", "Vaclavek", "GeometyDash", "7980", UserRole.WAREHOUSE_MANAGER));
-        userManager.addUser(new User("Damian", "Smekal", "Tasemnice", "SN24680", UserRole.EMPLOYEE));
+        if (userManager.getAllUsers().isEmpty()) {
+            userManager.addUser(new User("Leonid", "Titarov",  "tvojeMama",   "6969",    UserRole.ADMIN));
+            userManager.addUser(new User("Pavel",  "Vaclavek", "GeometyDash", "7980",    UserRole.WAREHOUSE_MANAGER));
+            userManager.addUser(new User("Damian", "Smekal",   "Tasemnice",   "SN24680", UserRole.EMPLOYEE));
+        }
 
-        // Načtení produktů ze souboru
-        loadProductsFromFile();
-}
-
-    /**
-     * Načítá produkty ze souboru, pokud neexistuje vytvoří defaultní.
-     */
-    private static void loadProductsFromFile() {
-        try {
-
-            if (!Files.exists(Paths.get(PRODUCTS_FILE))) {
-                createDefaultProductsFile();
-            }
-
-
-            try (BufferedReader reader = new BufferedReader(new FileReader(PRODUCTS_FILE))) {
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    // Přeskočení prázdných řádků
-                    if (line.trim().isEmpty()) {
-                        continue;
-                    }
-
-
-                    String[] parts = line.split(";");
-                    if (parts.length >= 5) {
-                        String id = parts[0].trim();
-                        String name = parts[1].trim();
-                        int quantity = Integer.parseInt(parts[2].trim());
-                        ProductCategory category = ProductCategory.valueOf(parts[3].trim());
-                        String status = parts[4].trim();
-
-
-                        inventoryManager.addProduct(new Product(id, name, quantity, category, status));
-                    }
-                }
-                System.out.println("Produkty byly úspěšně načteny ze souboru.");
-            }
-        } catch (IOException e) {
-            System.err.println("Chyba při načítání produktů ze souboru: " + e.getMessage());
-        } catch (Exception e) {
-            System.err.println("Neočekávaná chyba při načítání produktů: " + e.getMessage());
+        if (inventoryManager.getAllProducts().isEmpty()) {
+            inventoryManager.addProduct(new Product("P001", "Monitor Dell 24\"",   15, ProductCategory.ELECTRONICS,    "Skladem"));
+            inventoryManager.addProduct(new Product("P002", "Klávesnice Logitech", 30, ProductCategory.ELECTRONICS,    "Skladem"));
+            inventoryManager.addProduct(new Product("P003", "Kancelářský stůl",     5, ProductCategory.FURNITURE,       "Skladem"));
+            inventoryManager.addProduct(new Product("P004", "Židle ergonomická",     8, ProductCategory.FURNITURE,       "Objednáno"));
+            inventoryManager.addProduct(new Product("P005", "Tiskový papír A4",     50, ProductCategory.OFFICE_SUPPLIES, "Skladem"));
+            inventoryManager.addProduct(new Product("P006", "Tonery HP",            12, ProductCategory.OFFICE_SUPPLIES, "Málo zásob"));
+            inventoryManager.addProduct(new Product("P007", "USB flash disk 64GB", 25, ProductCategory.ELECTRONICS,    "Skladem"));
+            inventoryManager.addProduct(new Product("P008", "Šanony A4",           40, ProductCategory.OFFICE_SUPPLIES, "Skladem"));
+            inventoryManager.addProduct(new Product("P009", "Router WiFi",           7, ProductCategory.ELECTRONICS,    "Objednáno"));
+            inventoryManager.addProduct(new Product("P010", "Konferenční stolek",    3, ProductCategory.FURNITURE,       "Skladem"));
         }
     }
 
-    /**
-     * Vytváří soubor s výchozími produkty pro testování.
-     */
-
-    private static void createDefaultProductsFile() {
-        try {
-            List<String> lines = new ArrayList<>();
-            lines.add("P001;Monitor Dell 24\";15;ELECTRONICS;Skladem");
-            lines.add("P002;Klávesnice Logitech;30;ELECTRONICS;Skladem");
-            lines.add("P003;Kancelářský stůl;5;FURNITURE;Skladem");
-            lines.add("P004;Židle ergonomická;8;FURNITURE;Objednáno");
-            lines.add("P005;Tiskový papír A4;50;OFFICE_SUPPLIES;Skladem");
-            lines.add("P006;Tonery HP;12;OFFICE_SUPPLIES;Málo zásob");
-            lines.add("P007;USB flash disk 64GB;25;ELECTRONICS;Skladem");
-            lines.add("P008;Šanony A4;40;OFFICE_SUPPLIES;Skladem");
-            lines.add("P009;Router WiFi;7;ELECTRONICS;Objednáno");
-            lines.add("P010;Konferenční stolek;3;FURNITURE;Skladem");
-
-            Files.write(Paths.get(PRODUCTS_FILE), lines);
-            System.out.println("Soubor s defaultními produkty byl vytvořen.");
-        } catch (IOException e) {
-            System.err.println("Chyba při vytváření souboru s produkty: " + e.getMessage());
-        }
-    }
-
-/**
- * Ověřuje přihlašovací údaje a otevírá hlavní aplikaci.
- * @return true pokud je autentifikace úspěšná
- */
-
-    public static boolean authenticateUser(String firstName, String lastName, String password, String serialNumber) {
+    public static boolean authenticateUser(String firstName, String lastName,
+                                           String password, String serialNumber) {
         currentUser = userManager.authenticateUser(firstName, lastName, password, serialNumber);
         if (currentUser != null) {
             loginScreen.dispose();
@@ -132,19 +74,10 @@ public class InventorySystem {
         return false;
     }
 
-    /**
-     * Vrací aktuálně přihlášeného uživatele.
-     * @return objekt aktuálního uživatele nebo null
-     */
-
     public static User getCurrentUser() {
         return currentUser;
     }
 
-    /**
-     * Odhlašuje uživatele a vrací na přihlašovací obrazovku.
-     */
-    
     public static void logout() {
         if (mainApplication != null) {
             mainApplication.dispose();

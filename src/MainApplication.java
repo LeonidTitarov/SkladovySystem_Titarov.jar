@@ -33,7 +33,6 @@ class MainApplication extends JFrame {
      * Pro uživatele administrávy přídává záložku pro správu se zaměstnanci.
      * */
 
-
     // základní vlastnosti hlavního okna
     private void setupUI() {
         setTitle("Skladový systém - " + currentUser.getFullName() + " (" + currentUser.getRole() + ")");
@@ -141,6 +140,7 @@ class MainApplication extends JFrame {
      * Obnoví data ve všech panelech aplikace podle oprávnění uživatele.
      */
 
+    // refhreshuje data no a pokud jste navic jeste admin tak vam to refhresne i uzivatele
     private void refreshData() {
         productsPanel.refreshData();
         transactionsPanel.refreshData();

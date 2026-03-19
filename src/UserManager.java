@@ -1,51 +1,30 @@
-import java.util.ArrayList;
 import java.util.List;
 
-// Správce uživatelů
+/**
+ * Správce uživatelů – nyní deleguje veškeré ukládání na DatabaseManager.
+ */
 class UserManager {
-    private List<User> users;
 
-    /**
-     * Konstruktor pro spávů zaměstatnanců
-     * */
-    public UserManager() {
-        users = new ArrayList<>();
+    private final DatabaseManager db;
+
+    public UserManager(DatabaseManager db) {
+        this.db = db;
     }
 
-    /**
-     * Přidání uživatele do seznamu uživatelů
-     * */
     public void addUser(User user) {
-        users.add(user);
+        db.addUser(user);
     }
-
-    /**
-     * Odebrání uživatele z seznamu uživatelů
-     * */
 
     public boolean removeUser(User user) {
-        return users.remove(user);
+        return db.removeUser(user);
     }
 
-    /**
-     * Ověření uživatelé v systému
-     * */
-
-    public User authenticateUser(String firstName, String lastName, String password, String serialNumber) {
-        for (User user : users) {
-            if (user.authenticate(firstName, lastName, password, serialNumber)) {
-                return user;
-            }
-        }
-        return null;
+    public User authenticateUser(String firstName, String lastName,
+                                 String password, String serialNumber) {
+        return db.authenticateUser(firstName, lastName, password, serialNumber);
     }
-
-/**
- * Vrací nový seznam se všemi uživateli
- * */
 
     public List<User> getAllUsers() {
-        return new java.util.ArrayList<>(users);
-    }}
-
-
+        return db.getAllUsers();
+    }
+}
